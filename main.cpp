@@ -2,6 +2,7 @@
 #include <vector>
 #include <memory>
 #include <iomanip>
+
 #include "user.h"
 #include "penghuni.h"
 #include "kamar.h"
@@ -13,32 +14,123 @@
 
 using namespace std;
 
-// Generator ID sederhana, contoh: BK001, SW001, PB001
-string buatID(string prefix, int nomor) {
+// ==========================================
+// GENERATOR ID
+// ==========================================
+
+string buatID(string prefix, int nomor)
+{
+
     string angka = to_string(nomor);
-    while (angka.length() < 3) angka = "0" + angka;
+
+    while (angka.length() < 3)
+    {
+        angka = "0" + angka;
+    }
+
     return prefix + angka;
 }
 
-Kamar* cariKamar(vector<Kamar>& daftarKamar, string nomor) {
-    for (auto& k : daftarKamar) {
-        if (k.getNomorKamar() == nomor) return &k;
+// ==========================================
+// CARI KAMAR
+// ==========================================
+
+Kamar *cariKamar(
+    vector<Kamar> &daftarKamar,
+    string nomor)
+{
+
+    for (auto &k : daftarKamar)
+    {
+
+        if (k.getNomorKamar() == nomor)
+        {
+            return &k;
+        }
     }
+
     return nullptr;
 }
 
-Penghuni* cariPenghuni(vector<Penghuni>& daftarPenghuni, string nim) {
-    for (auto& p : daftarPenghuni) {
-        if (p.getNim() == nim) return &p;
+// ==========================================
+// CARI PENGHUNI
+// ==========================================
+
+Penghuni *cariPenghuni(
+    vector<Penghuni> &daftarPenghuni,
+    string nim)
+{
+
+    for (auto &p : daftarPenghuni)
+    {
+
+        if (p.getNim() == nim)
+        {
+            return &p;
+        }
     }
+
     return nullptr;
 }
 
-int main() {
-    // Format tampilan angka Rupiah: tanpa notasi ilmiah, tanpa desimal
+// ==========================================
+// CARI BOOKING
+// ==========================================
+
+Booking *cariBooking(
+    vector<Booking> &daftarBooking,
+    string idBooking)
+{
+
+    for (auto &b : daftarBooking)
+    {
+
+        if (b.getIdBooking() == idBooking)
+        {
+            return &b;
+        }
+    }
+
+    return nullptr;
+}
+
+// ==========================================
+// CARI PEMBAYARAN
+// ==========================================
+
+Pembayaran *cariPembayaran(
+    vector<Pembayaran> &daftarPembayaran,
+    string idPembayaran)
+{
+
+    for (auto &p : daftarPembayaran)
+    {
+
+        if (p.getIdPembayaran() == idPembayaran)
+        {
+            return &p;
+        }
+    }
+
+    return nullptr;
+}
+
+// ==========================================
+// MAIN PROGRAM
+// ==========================================
+
+int main()
+{
+
     cout << fixed << setprecision(0);
 
-    Pemilik pemilik("Admin SmartKos", "081234567890");
+    // ==========================================
+    // DATA AWAL
+    // ==========================================
+
+    Pemilik pemilik(
+        "Admin SmartKos",
+        "081234567890");
 
     vector<Kamar> daftarKamar;
     vector<Penghuni> daftarPenghuni;
@@ -46,10 +138,19 @@ int main() {
     vector<unique_ptr<Sewa>> daftarSewa;
     vector<Pembayaran> daftarPembayaran;
 
-    int counterBooking = 1, counterSewa = 1, counterPembayaran = 1;
+    int counterBooking = 1;
+    int counterSewa = 1;
+    int counterPembayaran = 1;
+
     int pilihan;
 
-    do {
+    // ==========================================
+    // MENU UTAMA
+    // ==========================================
+
+    do
+    {
+
         cout << "\n===================================\n";
         cout << "           MENU SMARTKOS\n";
         cout << "===================================\n";
@@ -62,212 +163,681 @@ int main() {
         cout << "7. Laporan\n";
         cout << "0. Keluar\n";
         cout << "===================================\n";
+
         cout << "Pilihan: ";
         cin >> pilihan;
 
-        if (cin.fail()) {
+        if (cin.fail())
+        {
+
             cin.clear();
             cin.ignore(10000, '\n');
+
             cout << "Input tidak valid.\n";
+
             continue;
         }
 
-        switch (pilihan) {
-            case 1: {
-                pemilik.tampilkanSemuaKamar(daftarKamar);
-                cout << "\nTambah kamar baru? (1=Ya / 0=Tidak): ";
-                int tambah; cin >> tambah;
-                if (tambah == 1) pemilik.tambahKamar(daftarKamar);
+        // ==========================================
+        // MENU 1 - DATA KAMAR
+        // ==========================================
+
+        switch (pilihan)
+        {
+
+        case 1:
+        {
+
+            pemilik.tampilkanSemuaKamar(
+                daftarKamar);
+
+            cout << "\nTambah kamar baru? (1=Ya / 0=Tidak): ";
+
+            int tambah;
+            cin >> tambah;
+
+            if (tambah == 1)
+            {
+
+                pemilik.tambahKamar(
+                    daftarKamar);
+            }
+
+            break;
+        }
+
+            // ==========================================
+            // MENU 2 - DATA PENGHUNI
+            // ==========================================
+
+        case 2:
+        {
+
+            pemilik.lihatPenghuni(
+                daftarPenghuni);
+
+            break;
+        }
+
+            // ==========================================
+            // MENU 3 - BOOKING KAMAR
+            // ==========================================
+
+        case 3:
+        {
+
+            string namaPemesan;
+            string nim;
+            string noHP;
+            string nomorKamar;
+            string tglBooking;
+            string tglMasuk;
+
+            int durasi;
+            double uangMuka;
+
+            cout << "\n===== BOOKING KAMAR =====\n";
+
+            cin.ignore();
+
+            cout << "Nama Pemesan      : ";
+            getline(cin, namaPemesan);
+
+            cout << "NIM               : ";
+            cin >> nim;
+
+            cout << "No HP             : ";
+            cin >> noHP;
+
+            cout << "Nomor Kamar       : ";
+            cin >> nomorKamar;
+
+            // ------------------------------------------
+            // CARI KAMAR
+            // ------------------------------------------
+
+            Kamar *kamar = cariKamar(
+                daftarKamar,
+                nomorKamar);
+
+            if (kamar == nullptr)
+            {
+
+                cout << "Kamar tidak ditemukan.\n";
+
                 break;
             }
 
-            case 2: {
-                pemilik.tambahPenghuni(daftarPenghuni);
+            // ------------------------------------------
+            // CEK STATUS KAMAR
+            // ------------------------------------------
+
+            if (kamar->getStatus() != "TERSEDIA")
+            {
+
+                cout << "Kamar tidak tersedia.\n";
+
                 break;
             }
 
-            case 3: {
-                string namaPemesan, nomorKamar, tglBooking, tglMasuk;
-                int durasi; double uangMuka;
+            cout << "Tanggal Booking   : ";
+            cin >> tglBooking;
 
-                cout << "\n--- Booking Kamar ---\n";
-                cout << "Nama Pemesan   : "; cin.ignore(); getline(cin, namaPemesan);
-                cout << "Nomor Kamar    : "; cin >> nomorKamar;
+            cout << "Tanggal Masuk     : ";
+            cin >> tglMasuk;
 
-                Kamar* kamar = cariKamar(daftarKamar, nomorKamar);
-                if (kamar == nullptr) {
-                    cout << "Kamar tidak ditemukan.\n";
-                    break;
-                }
+            int jenisSewa;
 
-                // CEK status kamar
-                if (kamar->getStatus() == "TERSEDIA") {
-                    cout << "Tanggal Booking      : "; cin >> tglBooking;
-                    cout << "Tanggal Masuk        : "; cin >> tglMasuk;
-                    cout << "Durasi Sewa (bulan)  : "; cin >> durasi;
-                    cout << "Uang Muka            : "; cin >> uangMuka;
+            cout << "\nJenis Sewa:\n";
+            cout << "1. Bulanan\n";
+            cout << "2. Tahunan\n";
+            cout << "Pilihan          : ";
+            cin >> jenisSewa;
 
-                    string id = buatID("BK", counterBooking++);
-                    Booking b(id, namaPemesan, nomorKamar, tglBooking, tglMasuk, durasi, uangMuka);
-                    b.buatBooking();
-                    daftarBooking.push_back(b);
+            cout << "Durasi Sewa ";
 
-                    kamar->ubahStatus("DIBOOKING");
-                    cout << "Booking berhasil\n";
-                } else {
-                    cout << "Kamar tidak tersedia\n";
-                }
+            if (jenisSewa == 1)
+            {
+                cout << "(bulan): ";
+            }
+            else if (jenisSewa == 2)
+            {
+                cout << "(tahun): ";
+            }
+            else
+            {
+                cout << "\nJenis sewa tidak valid.\n";
                 break;
             }
 
-            case 4: {
-                string nim, nomorKamar, tglMulai;
+            cin >> durasi;
 
-                cout << "\n--- Penyewaan Kamar ---\n";
-                cout << "NIM Penghuni : "; cin >> nim;
+            cout << "Uang Muka / DP    : Rp";
+            cin >> uangMuka;
 
-                Penghuni* penghuni = cariPenghuni(daftarPenghuni, nim);
-                if (penghuni == nullptr) {
-                    cout << "Penghuni tidak ditemukan.\n";
-                    break;
-                }
+            if (uangMuka <= 0)
+            {
 
-                nomorKamar = penghuni->getNomorKamar();
-                Kamar* kamar = cariKamar(daftarKamar, nomorKamar);
-                if (kamar == nullptr) {
-                    cout << "Kamar tidak ditemukan.\n";
-                    break;
-                }
+                cout << "Uang muka harus lebih dari 0.\n";
 
-                cout << "Tanggal Mulai Sewa           : "; cin >> tglMulai;
-                cout << "Jenis Sewa (1=Bulanan/2=Tahunan) : ";
-                int jenisSewa; cin >> jenisSewa;
-
-                string idSewa = buatID("SW", counterSewa++);
-
-                if (jenisSewa == 1) {
-                    int jumlahBulan;
-                    cout << "Jumlah Bulan : "; cin >> jumlahBulan;
-
-                    auto sewa = make_unique<SewaBulanan>(idSewa, penghuni->getNama(), nomorKamar,
-                                                        tglMulai, jumlahBulan, kamar->getHargaBulanan());
-                    cout << "Total Harga  : Rp" << sewa->getTotalHarga() << endl;
-                    daftarSewa.push_back(move(sewa));
-
-                } else if (jenisSewa == 2) {
-                    int jumlahTahun;
-                    cout << "Jumlah Tahun : "; cin >> jumlahTahun;
-
-                    auto sewa = make_unique<SewaTahunan>(idSewa, penghuni->getNama(), nomorKamar,
-                                                        tglMulai, jumlahTahun, kamar->getHargaTahunan());
-                    cout << "Total Harga  : Rp" << sewa->getTotalHarga() << endl;
-                    daftarSewa.push_back(move(sewa));
-
-                } else {
-                    cout << "Jenis sewa tidak valid.\n";
-                    break;
-                }
-
-                kamar->ubahStatus("TERISI");
-
-                string idBayar = buatID("PB", counterPembayaran++);
-                Pembayaran pembayaran(idBayar, idSewa, tglMulai, daftarSewa.back()->getTotalHarga());
-                daftarPembayaran.push_back(pembayaran);
-
-                cout << "Data penyewaan berhasil disimpan. (ID Pembayaran: " << idBayar << ")\n";
                 break;
             }
 
-            case 5: {
-                cout << "\n--- Pembayaran ---\n";
-                if (daftarPembayaran.empty()) {
-                    cout << "Belum ada data pembayaran.\n";
+            // ------------------------------------------
+            // BUAT BOOKING
+            // ------------------------------------------
+
+            string idBooking = buatID(
+                "BK",
+                counterBooking++);
+
+            Booking booking(
+                idBooking,
+                namaPemesan,
+                nim,
+                noHP,
+                nomorKamar,
+                tglBooking,
+                tglMasuk,
+                durasi,
+                uangMuka);
+
+            daftarBooking.push_back(
+                booking);
+
+            kamar->ubahStatus(
+                "DIBOOKING");
+
+            // ------------------------------------------
+            // BUAT PEMBAYARAN DP
+            // ------------------------------------------
+
+            string idPembayaran = buatID(
+                "PB",
+                counterPembayaran++);
+
+            Pembayaran pembayaran(
+                idPembayaran,
+                idBooking,
+                tglBooking,
+                "DP Booking",
+                uangMuka);
+
+            // Karena uang muka langsung dibayarkan
+            pembayaran.prosesPembayaran(
+                uangMuka);
+
+            daftarPembayaran.push_back(
+                pembayaran);
+
+            // ------------------------------------------
+            // BUAT DATA PENGHUNI OTOMATIS
+            // ------------------------------------------
+
+            Penghuni penghuni(
+                namaPemesan,
+                noHP,
+                nim,
+                nomorKamar);
+
+            penghuni.mulaiSewa();
+
+            daftarPenghuni.push_back(
+                penghuni);
+
+            cout << "\n===================================\n";
+            cout << "BOOKING BERHASIL\n";
+            cout << "===================================\n";
+
+            cout << "ID Booking     : "
+                 << idBooking << endl;
+
+            cout << "ID Pembayaran  : "
+                 << idPembayaran << endl;
+
+            cout << "Status Kamar   : DIBOOKING\n";
+
+            cout << "Data penghuni berhasil dibuat.\n";
+
+            cout << "===================================\n";
+
+            break;
+        }
+
+            // ==========================================
+            // MENU 4 - PENYEWAAN KAMAR
+            // ==========================================
+
+        case 4:
+        {
+
+            string nim;
+            string tglMulai;
+            int jenisSewa;
+
+            cout << "\n===== PENYEWAAN KAMAR =====\n";
+
+            cout << "NIM Penghuni : ";
+            cin >> nim;
+
+            Penghuni *penghuni = cariPenghuni(
+                daftarPenghuni,
+                nim);
+
+            if (penghuni == nullptr)
+            {
+
+                cout << "Penghuni tidak ditemukan.\n";
+
+                break;
+            }
+
+            string nomorKamar =
+                penghuni->getNomorKamar();
+
+            Kamar *kamar = cariKamar(
+                daftarKamar,
+                nomorKamar);
+
+            if (kamar == nullptr)
+            {
+
+                cout << "Kamar tidak ditemukan.\n";
+
+                break;
+            }
+
+            cout << "Tanggal Mulai Sewa : ";
+            cin >> tglMulai;
+
+            cout << "\nJenis Sewa\n";
+            cout << "1. Bulanan\n";
+            cout << "2. Tahunan\n";
+            cout << "Pilihan : ";
+            cin >> jenisSewa;
+
+            string idSewa = buatID(
+                "SW",
+                counterSewa++);
+
+            // ------------------------------------------
+            // SEWA BULANAN
+            // ------------------------------------------
+
+            if (jenisSewa == 1)
+            {
+
+                int jumlahBulan;
+
+                cout << "Durasi Kontrak (bulan): ";
+                cin >> jumlahBulan;
+
+                if (jumlahBulan <= 0)
+                {
+
+                    cout << "Durasi tidak valid.\n";
+
                     break;
                 }
 
-                pemilik.lihatPembayaran(daftarPembayaran);
+                auto sewa =
+                    make_unique<SewaBulanan>(
+                        idSewa,
+                        penghuni,
+                        nomorKamar,
+                        tglMulai,
+                        jumlahBulan,
+                        kamar->getHargaBulanan());
 
-                string idBayar;
-                cout << "Masukkan ID Pembayaran : "; cin >> idBayar;
+                cout << "\nTotal Nilai Kontrak : Rp"
+                     << sewa->hitungHarga()
+                     << endl;
 
-                bool ditemukan = false;
-                for (auto& p : daftarPembayaran) {
-                    if (p.getIdPembayaran() == idBayar) {
-                        ditemukan = true;
-                        double jumlahBayar;
-                        cout << "Jumlah Pembayaran : Rp"; cin >> jumlahBayar;
+                cout << "Harga Tagihan Bulanan: Rp"
+                     << kamar->getHargaBulanan()
+                     << endl;
 
-                        bool lunas = p.prosesPembayaran(jumlahBayar);
-                        if (lunas) {
-                            for (auto& s : daftarSewa) {
-                                if (s->getIdSewa() == p.getIdSewa()) {
-                                    s->setStatus("AKTIF");
-                                }
-                            }
+                daftarSewa.push_back(
+                    move(sewa));
+            }
+
+            // ------------------------------------------
+            // SEWA TAHUNAN
+            // ------------------------------------------
+
+            else if (jenisSewa == 2)
+            {
+
+                int jumlahTahun;
+
+                cout << "Durasi Kontrak (tahun): ";
+                cin >> jumlahTahun;
+
+                if (jumlahTahun <= 0)
+                {
+
+                    cout << "Durasi tidak valid.\n";
+
+                    break;
+                }
+
+                auto sewa =
+                    make_unique<SewaTahunan>(
+                        idSewa,
+                        penghuni,
+                        nomorKamar,
+                        tglMulai,
+                        jumlahTahun,
+                        kamar->getHargaTahunan());
+
+                cout << "\nTotal Nilai Kontrak : Rp"
+                     << sewa->hitungHarga()
+                     << endl;
+
+                cout << "Harga Tagihan Tahunan: Rp"
+                     << kamar->getHargaTahunan()
+                     << endl;
+
+                daftarSewa.push_back(
+                    move(sewa));
+            }
+
+            else
+            {
+
+                cout << "Jenis sewa tidak valid.\n";
+
+                break;
+            }
+
+            // ------------------------------------------
+            // AKTIFKAN PENGHUNI DAN KAMAR
+            // ------------------------------------------
+
+            penghuni->mulaiSewa();
+
+            kamar->ubahStatus(
+                "TERISI");
+
+            // ------------------------------------------
+            // BUAT TAGIHAN AWAL
+            // ------------------------------------------
+
+            double tagihanAwal;
+
+            if (jenisSewa == 1)
+            {
+
+                tagihanAwal =
+                    kamar->getHargaBulanan();
+            }
+            else
+            {
+
+                tagihanAwal =
+                    kamar->getHargaTahunan();
+            }
+
+            string idPembayaran = buatID(
+                "PB",
+                counterPembayaran++);
+
+            Pembayaran pembayaran(
+                idPembayaran,
+                idSewa,
+                tglMulai,
+                jenisSewa == 1
+                    ? "Tagihan Bulanan"
+                    : "Tagihan Tahunan",
+                tagihanAwal);
+
+            daftarPembayaran.push_back(
+                pembayaran);
+
+            cout << "\n===================================\n";
+            cout << "PENYEWAAN BERHASIL\n";
+            cout << "===================================\n";
+
+            cout << "ID Sewa        : "
+                 << idSewa << endl;
+
+            cout << "ID Pembayaran  : "
+                 << idPembayaran << endl;
+
+            cout << "Tagihan Awal   : Rp"
+                 << tagihanAwal << endl;
+
+            cout << "Status Kamar   : TERISI\n";
+
+            cout << "===================================\n";
+
+            break;
+        }
+
+            // ==========================================
+            // MENU 5 - PEMBAYARAN
+            // ==========================================
+
+        case 5:
+        {
+
+            cout << "\n===== PEMBAYARAN =====\n";
+
+            if (daftarPembayaran.empty())
+            {
+
+                cout << "Belum ada data pembayaran.\n";
+
+                break;
+            }
+
+            pemilik.lihatPembayaran(
+                daftarPembayaran);
+
+            string idPembayaran;
+
+            cout << "\nID Pembayaran : ";
+            cin >> idPembayaran;
+
+            Pembayaran *pembayaran =
+                cariPembayaran(
+                    daftarPembayaran,
+                    idPembayaran);
+
+            if (pembayaran == nullptr)
+            {
+
+                cout << "ID pembayaran tidak ditemukan.\n";
+
+                break;
+            }
+
+            double jumlahBayar;
+
+            cout << "Jumlah Pembayaran : Rp";
+            cin >> jumlahBayar;
+
+            bool lunas =
+                pembayaran->prosesPembayaran(
+                    jumlahBayar);
+
+            // ------------------------------------------
+            // JIKA LUNAS
+            // ------------------------------------------
+
+            if (lunas)
+            {
+
+                cout << "\nTagihan telah lunas.\n";
+
+                for (auto &s : daftarSewa)
+                {
+
+                    if (
+                        s->getIdSewa() == pembayaran->getIdSewa())
+                    {
+
+                        s->setStatus(
+                            "AKTIF");
+
+                        if (s->getPenghuni() != nullptr)
+                        {
+
+                            s->getPenghuni()
+                                ->mulaiSewa();
                         }
-                        break;
                     }
                 }
-                if (!ditemukan) cout << "ID Pembayaran tidak ditemukan.\n";
+            }
+
+            break;
+        }
+
+            // ==========================================
+            // MENU 6 - PEMBATALAN SEWA
+            // ==========================================
+
+        case 6:
+        {
+
+            string nim;
+
+            cout << "\n===== PEMBATALAN SEWA =====\n";
+
+            cout << "NIM Penghuni : ";
+            cin >> nim;
+
+            Penghuni *penghuni =
+                cariPenghuni(
+                    daftarPenghuni,
+                    nim);
+
+            if (penghuni == nullptr)
+            {
+
+                cout << "Penghuni tidak ditemukan.\n";
+
                 break;
             }
 
-            case 6: {
-                string nim;
-                cout << "\n--- Pembatalan Sewa ---\n";
-                cout << "NIM Penghuni : "; cin >> nim;
+            Sewa *sewaAktif = nullptr;
 
-                Penghuni* penghuni = cariPenghuni(daftarPenghuni, nim);
-                if (penghuni == nullptr) {
-                    cout << "Penghuni tidak ditemukan.\n";
+            for (auto &s : daftarSewa)
+            {
+
+                if (
+                    s->getPenghuni() == penghuni &&
+                    s->getStatus() == "AKTIF")
+                {
+
+                    sewaAktif = s.get();
+
                     break;
                 }
+            }
 
-                // Periksa status penyewaan
-                Sewa* sewaAktif = nullptr;
-                for (auto& s : daftarSewa) {
-                    if (s->getNamaPenyewa() == penghuni->getNama() && s->getStatus() == "AKTIF") {
-                        sewaAktif = s.get();
-                        break;
-                    }
-                }
+            if (sewaAktif == nullptr)
+            {
 
-                if (sewaAktif != nullptr) {
-                    int lamaPenggunaan;
-                    cout << "Lama Penggunaan (satuan sesuai jenis sewa) : ";
-                    cin >> lamaPenggunaan;
+                cout << "Tidak ada penyewaan aktif.\n";
 
-                    PembatalanSewa pembatalan;
-                    pembatalan.hitungRefund(sewaAktif->getTotalHarga(), sewaAktif->getDurasi(), lamaPenggunaan);
-
-                    sewaAktif->setStatus("DIBATALKAN");
-                    penghuni->berhentiSewa();
-
-                    Kamar* kamar = cariKamar(daftarKamar, sewaAktif->getNomorKamar());
-                    if (kamar != nullptr) kamar->ubahStatus("TERSEDIA");
-
-                    cout << fixed << setprecision(2);
-                    cout << "\nBiaya Penggunaan : Rp" << pembatalan.getBiayaTerpakai() << endl;
-                    cout << "Penalti          : Rp" << pembatalan.getPenalti() << endl;
-                    cout << "Jumlah Refund    : Rp" << pembatalan.getRefund() << endl;
-                } else {
-                    cout << "Penyewaan tidak dapat dibatalkan\n";
-                }
                 break;
             }
 
-            case 7: {
-                pemilik.lihatLaporan(daftarKamar, daftarPenghuni, daftarPembayaran, daftarSewa);
+            int lamaPenggunaan;
+
+            cout << "Lama Penggunaan : ";
+            cin >> lamaPenggunaan;
+
+            if (lamaPenggunaan < 0)
+            {
+
+                cout << "Lama penggunaan tidak valid.\n";
+
                 break;
             }
 
-            case 0: {
-                cout << "\nProgram selesai\n";
-                break;
+            PembatalanSewa pembatalan;
+
+            pembatalan.hitungRefund(
+                sewaAktif->hitungHarga(),
+                sewaAktif->getDurasi(),
+                lamaPenggunaan);
+
+            // ------------------------------------------
+            // UBAH STATUS
+            // ------------------------------------------
+
+            sewaAktif->setStatus(
+                "DIBATALKAN");
+
+            penghuni->berhentiSewa();
+
+            Kamar *kamar =
+                cariKamar(
+                    daftarKamar,
+                    sewaAktif->getNomorKamar());
+
+            if (kamar != nullptr)
+            {
+
+                kamar->ubahStatus(
+                    "TERSEDIA");
             }
 
-            default:
-                cout << "Pilihan tidak valid\n";
+            cout << "\n===================================\n";
+            cout << "PEMBATALAN SEWA\n";
+            cout << "===================================\n";
+
+            cout << "Biaya Penggunaan : Rp"
+                 << pembatalan.getBiayaTerpakai()
+                 << endl;
+
+            cout << "Penalti          : Rp"
+                 << pembatalan.getPenalti()
+                 << endl;
+
+            cout << "Jumlah Refund    : Rp"
+                 << pembatalan.getRefund()
+                 << endl;
+
+            cout << "Status Sewa      : DIBATALKAN\n";
+            cout << "Status Kamar     : TERSEDIA\n";
+
+            cout << "===================================\n";
+
+            break;
+        }
+
+            // ==========================================
+            // MENU 7 - LAPORAN
+            // ==========================================
+
+        case 7:
+        {
+
+            pemilik.lihatLaporan(
+                daftarKamar,
+                daftarPenghuni,
+                daftarPembayaran,
+                daftarSewa);
+
+            break;
+        }
+
+            // ==========================================
+            // KELUAR
+            // ==========================================
+
+        case 0:
+
+            cout << "\nProgram selesai.\n";
+
+            break;
+
+        default:
+
+            cout << "Pilihan tidak valid.\n";
         }
 
     } while (pilihan != 0);

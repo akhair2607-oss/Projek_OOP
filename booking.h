@@ -1,58 +1,126 @@
 #pragma once
 #include <iostream>
 #include <string>
+
 using namespace std;
 
-// ==========================================
-// CLASS Booking
-// ==========================================
 class Booking {
 private:
     string idBooking;
     string namaPemesan;
+    string nim;
+    string noHP;
     string nomorKamar;
     string tanggalBooking;
     string tanggalMasuk;
+
     int durasi;
     double uangMuka;
-    string status; // "MENUNGGU", "DIKONFIRMASI", "DIBATALKAN"
+    string status;
 
 public:
-    Booking() {}
-    Booking(string idBooking, string namaPemesan, string nomorKamar,
-            string tanggalBooking, string tanggalMasuk, int durasi, double uangMuka)
-        : idBooking(idBooking), namaPemesan(namaPemesan), nomorKamar(nomorKamar),
-          tanggalBooking(tanggalBooking), tanggalMasuk(tanggalMasuk),
-          durasi(durasi), uangMuka(uangMuka), status("MENUNGGU") {}
+    // Constructor default
+    Booking() {
+        durasi = 0;
+        uangMuka = 0;
+        status = "DIBUAT";
+    }
 
-    string getIdBooking() const { return idBooking; }
-    string getNamaPemesan() const { return namaPemesan; }
-    string getNomorKamar() const { return nomorKamar; }
-    string getStatus() const { return status; }
+    // Constructor lengkap
+    Booking(
+        string idBooking,
+        string namaPemesan,
+        string nim,
+        string noHP,
+        string nomorKamar,
+        string tanggalBooking,
+        string tanggalMasuk,
+        int durasi,
+        double uangMuka
+    ) {
+        this->idBooking = idBooking;
+        this->namaPemesan = namaPemesan;
+        this->nim = nim;
+        this->noHP = noHP;
+        this->nomorKamar = nomorKamar;
+        this->tanggalBooking = tanggalBooking;
+        this->tanggalMasuk = tanggalMasuk;
+        this->durasi = durasi;
+        this->uangMuka = uangMuka;
+        this->status = "DIBOOKING";
+    }
 
+    // Getter
+    string getIdBooking() const {
+        return idBooking;
+    }
+
+    string getNamaPemesan() const {
+        return namaPemesan;
+    }
+
+    string getNim() const {
+        return nim;
+    }
+
+    string getNoHP() const {
+        return noHP;
+    }
+
+    string getNomorKamar() const {
+        return nomorKamar;
+    }
+
+    string getTanggalBooking() const {
+        return tanggalBooking;
+    }
+
+    string getTanggalMasuk() const {
+        return tanggalMasuk;
+    }
+
+    int getDurasi() const {
+        return durasi;
+    }
+
+    double getUangMuka() const {
+        return uangMuka;
+    }
+
+    string getStatus() const {
+        return status;
+    }
+
+    // Setter status
+    void setStatus(string status) {
+        this->status = status;
+    }
+
+    // Method membuat booking
     void buatBooking() {
-        status = "MENUNGGU";
-        cout << "Booking " << idBooking << " berhasil dibuat, menunggu konfirmasi." << endl;
+        cout << "\nBooking berhasil dibuat.\n";
+        cout << "ID Booking    : " << idBooking << endl;
+        cout << "Nama Pemesan  : " << namaPemesan << endl;
+        cout << "NIM           : " << nim << endl;
+        cout << "No HP         : " << noHP << endl;
+        cout << "Nomor Kamar   : " << nomorKamar << endl;
+        cout << "Tanggal Masuk : " << tanggalMasuk << endl;
+        cout << "Durasi        : " << durasi << " bulan" << endl;
+        cout << "Uang Muka     : Rp" << uangMuka << endl;
+        cout << "Status        : " << status << endl;
     }
 
-    void konfirmasiBooking() {
-        status = "DIKONFIRMASI";
-        cout << "Booking " << idBooking << " telah dikonfirmasi." << endl;
-    }
-
-    void batalkanBooking() {
-        status = "DIBATALKAN";
-        cout << "Booking " << idBooking << " telah dibatalkan." << endl;
-    }
-
-    void tampilkanBooking() {
-        cout << "ID Booking      : " << idBooking << endl;
-        cout << "Nama Pemesan    : " << namaPemesan << endl;
-        cout << "Nomor Kamar     : " << nomorKamar << endl;
+    // Method menampilkan data booking
+    void tampilkanBooking() const {
+        cout << "ID Booking    : " << idBooking << endl;
+        cout << "Nama Pemesan  : " << namaPemesan << endl;
+        cout << "NIM           : " << nim << endl;
+        cout << "No HP         : " << noHP << endl;
+        cout << "Nomor Kamar   : " << nomorKamar << endl;
         cout << "Tanggal Booking : " << tanggalBooking << endl;
-        cout << "Tanggal Masuk   : " << tanggalMasuk << endl;
-        cout << "Durasi          : " << durasi << " bulan" << endl;
-        cout << "Uang Muka       : Rp" << uangMuka << endl;
-        cout << "Status          : " << status << endl;
+        cout << "Tanggal Masuk : " << tanggalMasuk << endl;
+        cout << "Durasi        : " << durasi << " bulan" << endl;
+        cout << "Uang Muka     : Rp" << uangMuka << endl;
+        cout << "Status        : " << status << endl;
     }
 };

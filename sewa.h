@@ -1,89 +1,205 @@
 #pragma once
 #include <iostream>
 #include <string>
+
+#include "Penghuni.h"
+
 using namespace std;
 
 // ==========================================
-// CLASS Sewa (Base Class - Abstract)
+// CLASS SEWA
 // ==========================================
+
 class Sewa {
+
 protected:
     string idSewa;
-    string namaPenyewa;
+    Penghuni* penghuni;
     string nomorKamar;
     string tanggalMulai;
     int durasi;
-    double totalHarga;
-    string status; // "AKTIF", "SELESAI", "DIBATALKAN"
+    double harga;
+    string status;
 
 public:
-    Sewa() {}
-    Sewa(string idSewa, string namaPenyewa, string nomorKamar, string tanggalMulai, int durasi)
-        : idSewa(idSewa), namaPenyewa(namaPenyewa), nomorKamar(nomorKamar),
-          tanggalMulai(tanggalMulai), durasi(durasi), totalHarga(0), status("AKTIF") {}
 
+    // Constructor default
+    Sewa() {
+        penghuni = nullptr;
+        durasi = 0;
+        harga = 0;
+        status = "BELUM AKTIF";
+    }
+
+    // Constructor
+    Sewa(
+        string idSewa,
+        Penghuni* penghuni,
+        string nomorKamar,
+        string tanggalMulai,
+        int durasi,
+        double harga
+    ) {
+        this->idSewa = idSewa;
+        this->penghuni = penghuni;
+        this->nomorKamar = nomorKamar;
+        this->tanggalMulai = tanggalMulai;
+        this->durasi = durasi;
+        this->harga = harga;
+        this->status = "BELUM AKTIF";
+    }
+
+    // Destructor virtual
     virtual ~Sewa() {}
 
-    string getIdSewa() const { return idSewa; }
-    string getNamaPenyewa() const { return namaPenyewa; }
-    string getNomorKamar() const { return nomorKamar; }
-    string getStatus() const { return status; }
-    double getTotalHarga() const { return totalHarga; }
-    int getDurasi() const { return durasi; }
+    // ==============================
+    // GETTER
+    // ==============================
 
-    void setStatus(string s) { status = s; }
+    string getIdSewa() const {
+        return idSewa;
+    }
 
-    virtual double hitungHarga() = 0; // method abstrak, wajib dioverride turunannya
+    string getNomorKamar() const {
+        return nomorKamar;
+    }
 
-    virtual void tampilkanSewa() {
+    string getTanggalMulai() const {
+        return tanggalMulai;
+    }
+
+    int getDurasi() const {
+        return durasi;
+    }
+
+    double getHarga() const {
+        return harga;
+    }
+
+    string getStatus() const {
+        return status;
+    }
+
+    Penghuni* getPenghuni() const {
+        return penghuni;
+    }
+
+    // ==============================
+    // SETTER
+    // ==============================
+
+    void setStatus(string status) {
+        this->status = status;
+    }
+
+    // ==============================
+    // POLYMORPHISM
+    // ==============================
+
+    virtual double hitungHarga() const = 0;
+
+    virtual void tampilkanData() const {
+
+        cout << "\n------------------------------\n";
         cout << "ID Sewa       : " << idSewa << endl;
-        cout << "Penyewa       : " << namaPenyewa << endl;
+
+        if (penghuni != nullptr) {
+            cout << "Nama Penghuni : "
+                 << penghuni->getNama() << endl;
+
+            cout << "NIM           : "
+                 << penghuni->getNim() << endl;
+        }
+
         cout << "Nomor Kamar   : " << nomorKamar << endl;
         cout << "Tanggal Mulai : " << tanggalMulai << endl;
         cout << "Durasi        : " << durasi << endl;
-        cout << "Total Harga   : Rp" << totalHarga << endl;
+        cout << "Harga         : Rp" << harga << endl;
         cout << "Status        : " << status << endl;
+        cout << "------------------------------\n";
     }
 };
 
+
 // ==========================================
-// CLASS SewaBulanan EXTENDS Sewa
+// CLASS SewaBulanan
 // ==========================================
+
 class SewaBulanan : public Sewa {
-private:
-    double hargaPerBulan;
 
 public:
-    SewaBulanan() {}
-    SewaBulanan(string idSewa, string namaPenyewa, string nomorKamar,
-                string tanggalMulai, int durasi, double hargaPerBulan)
-        : Sewa(idSewa, namaPenyewa, nomorKamar, tanggalMulai, durasi),
-          hargaPerBulan(hargaPerBulan) {
-        totalHarga = hitungHarga();
+
+    SewaBulanan(
+        string idSewa,
+        Penghuni* penghuni,
+        string nomorKamar,
+        string tanggalMulai,
+        int durasi,
+        double hargaBulanan
+    ) : Sewa(
+        idSewa,
+        penghuni,
+        nomorKamar,
+        tanggalMulai,
+        durasi,
+        hargaBulanan
+    ) {}
+
+    // Polymorphism
+    double hitungHarga() const override {
+        return harga * durasi;
     }
 
-    double hitungHarga() override {
-        return hargaPerBulan * durasi;
+    void tampilkanData() const override {
+
+        cout << "\n===== SEWA BULANAN =====\n";
+
+        Sewa::tampilkanData();
+
+        cout << "Jenis Sewa    : Bulanan" << endl;
+        cout << "Harga / Bulan : Rp" << harga << endl;
+        cout << "Total Kontrak : Rp" << hitungHarga() << endl;
     }
 };
 
+
 // ==========================================
-// CLASS SewaTahunan EXTENDS Sewa
+// CLASS SewaTahunan
 // ==========================================
+
 class SewaTahunan : public Sewa {
-private:
-    double hargaPerTahun;
 
 public:
-    SewaTahunan() {}
-    SewaTahunan(string idSewa, string namaPenyewa, string nomorKamar,
-                string tanggalMulai, int durasi, double hargaPerTahun)
-        : Sewa(idSewa, namaPenyewa, nomorKamar, tanggalMulai, durasi),
-          hargaPerTahun(hargaPerTahun) {
-        totalHarga = hitungHarga();
+
+    SewaTahunan(
+        string idSewa,
+        Penghuni* penghuni,
+        string nomorKamar,
+        string tanggalMulai,
+        int durasi,
+        double hargaTahunan
+    ) : Sewa(
+        idSewa,
+        penghuni,
+        nomorKamar,
+        tanggalMulai,
+        durasi,
+        hargaTahunan
+    ) {}
+
+    // Polymorphism
+    double hitungHarga() const override {
+        return harga * durasi;
     }
 
-    double hitungHarga() override {
-        return hargaPerTahun * durasi;
+    void tampilkanData() const override {
+
+        cout << "\n===== SEWA TAHUNAN =====\n";
+
+        Sewa::tampilkanData();
+
+        cout << "Jenis Sewa    : Tahunan" << endl;
+        cout << "Harga / Tahun : Rp" << harga << endl;
+        cout << "Total Kontrak : Rp" << hitungHarga() << endl;
     }
 };
